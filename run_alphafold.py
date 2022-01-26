@@ -116,6 +116,7 @@ flags.DEFINE_integer('random_seed', None, 'The random seed for the data '
 flags.DEFINE_boolean('use_precomputed_msas', False, 'Whether to read MSAs that '
                      'have been written to disk. WARNING: This will not check '
                      'if the sequence, database or configuration have changed.')
+flags.DEFINE_boolean('skip_relaxation', True, 'Whether or not to compute amber relaxations')
 
 FLAGS = flags.FLAGS
 
@@ -384,7 +385,12 @@ def main(argv):
   logging.info('Have %d models: %s', len(model_runners),
                list(model_runners.keys()))
 
-  amber_relaxer = relax.AmberRelaxation(
+  logging.info('skip relaxation selected="%s"', FLAGS.skip_relaxation),
+
+  if FLAGS.skip_relaxation:
+      amber_relaxer_flag = None
+  else:
+      amber_relaxer_flag = relax.AmberRelaxation(
       max_iterations=RELAX_MAX_ITERATIONS,
       tolerance=RELAX_ENERGY_TOLERANCE,
       stiffness=RELAX_STIFFNESS,
@@ -406,7 +412,7 @@ def main(argv):
         output_dir_base=FLAGS.output_dir,
         data_pipeline=data_pipeline,
         model_runners=model_runners,
-        amber_relaxer=amber_relaxer,
+        amber_relaxer=amber_relaxer_flag,
         benchmark=FLAGS.benchmark,
         random_seed=random_seed,
         is_prokaryote=is_prokaryote)

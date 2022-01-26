@@ -74,6 +74,7 @@ flags.DEFINE_boolean(
     'use_precomputed_msas', False,
     'Whether to read MSAs that have been written to disk. WARNING: This will '
     'not check if the sequence, database or configuration have changed.')
+flags.DEFINE_boolean('skip_relaxation', True, 'Whether or not to compute amber relaxations')
 
 FLAGS = flags.FLAGS
 
@@ -187,6 +188,7 @@ def main(argv):
   command_args.extend([
       f'--output_dir={output_target_path}',
       f'--max_template_date={FLAGS.max_template_date}',
+      f'--skip_relaxation={FLAGS.skip_relaxation}',
       f'--db_preset={FLAGS.db_preset}',
       f'--model_preset={FLAGS.model_preset}',
       f'--benchmark={FLAGS.benchmark}',
